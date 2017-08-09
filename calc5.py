@@ -43,7 +43,7 @@ class Lexer():
 
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():
-            self.advace()
+            self.advance()
 
     def integer(self):
         """Return a (multidigit) integer consumed from the input."""
