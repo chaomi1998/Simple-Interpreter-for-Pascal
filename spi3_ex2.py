@@ -33,6 +33,7 @@ class Token():
 RESERVED_KEYWORDS = {
     'BEGIN': Token('BEGIN', 'BEGIN'),
     'END': Token('END', 'END'),
+    'DIV': Token('DIV', 'DIV'),
 }
 
 
@@ -121,9 +122,9 @@ class Lexer():
                 self.advance()
                 return Token(MUL, '*')
 
-            if self.current_char == '/':
-                self.advance()
-                return Token(DIV, '/')
+            # if self.current_char == '/':
+            #     self.advance()
+            #     return Token(DIV, '/')
 
             if self.current_char == '(':
                 self.advance()
@@ -372,7 +373,7 @@ class Interpreter(NodeVisitor):
         elif node.op.type == MUL:
             return self.visit(node.left) * self.visit(node.right)
         elif node.op.type == DIV:
-            return self.visit(node.left) / self.visit(node.right)
+            return int(self.visit(node.left) / self.visit(node.right))
 
     def visit_Num(self, node):
         return node.value
@@ -411,14 +412,22 @@ class Interpreter(NodeVisitor):
 
 
 def main():
-    import sys
-    text = open(sys.argv[1], 'r').read()
+    while True:
+        try:
+            try:
+                text = raw_input('spi> ')
+            except NameError:  # Python3
+                text = input('spi> ')
+        except EOFError:
+            break
+        if not text:
+            continue
 
-    lexer = Lexer(text)
-    parser = Parser(lexer)
-    interpreter = Interpreter(parser)
-    result = interpreter.interpret()
-    print(interpreter.GLOBAL_SCOPE)
+        lexer = Lexer(text)
+        parser = Parser(lexer)
+        interpreter = Interpreter(parser)
+        result = interpreter.interpret()
+        print(interpreter.GLOBAL_SCOPE)
 
 
 
